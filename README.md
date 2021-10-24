@@ -1,6 +1,7 @@
-﻿# Mars Rovers
 
-## Problem
+## Mars Rovers
+
+### Problem
 
 NASA intends to land robotic rovers on Mars to explore a particularly curious-looking plateau. The rovers must navigate this rectangular plateau in a way so that their on board cameras can get a complete image of the surrounding terrain to send back to Earth.
 
@@ -10,95 +11,97 @@ NASA remotely controls rovers via instructions consisting of strings of letters.
 
 Your task is write an application that takes the test input (instructions from NASA) and provides the expected output (the feedback from the rovers to NASA). Each rover will move in series, i.e. the next rover will not start moving until the one preceding it finishes.
 
-### INPUT
+
+#### INPUT
+
 
 Assume the southwest corner of the grid is 0,0 (the origin). The first line of input establishes the exploration grid bounds by indicating the coordinates corresponding to the northeast corner of the plateau.
 Next, each rover is given its instructions in turn. Each rover’s instructions consists of two lines of strings. The first string confirms the rover’s current position and heading. The second string consists of turn / move instructions.
 
-#### TEST INPUT
+**Test input**
 
-55
-12 N LMLMLMLMM
-33 E MMRMMRMRRM
+- 55
+- 12 N LMLMLMLMM
+- 33 E MMRMMRMRRM
 
-### OUTPUT
+
+#### OUTPUT
 
 Once each rover has received and completely executed its given instructions, it transmits its updated position and heading to NASA.
 
-#### TEST OUTPUT
+**Test output**
 
-13 N
-51 E
+- 13 N
+- 51 E
 
 
-
-## DESIGN
+### DESIGN
 
 The solution is formed by 4 projects
 
-### Domain
+**Domain**
 
-This is the Domain project.
+- This is the Domain project.
 
-It is a class library project.
+- It is a class library project.
 
-Contains all the models used in the application.
+- Contains all the models used in the application.
 
-Referenced by the Application project.
+- Referenced by the Application project.
 
-Does not use any NuGet package.
+- Does not use any NuGet package.
 
-### Application
+**Application**
 
-This is the Application project.
+- This is the Application project.
 
-It is a class library project.
+- It is a class library project.
 
-Contains all the business logic.
+- Contains all the business logic.
 
-Referenced by the Application.UnitTest and the WebApi projects.
+- Referenced by the Application.UnitTest and the WebApi projects.
 
-Uses MediatR and FluentValidation NuGet packages.
+- Uses MediatR and FluentValidation NuGet packages.
 
 ------------- TODO: Explain about request, response, validator (with child) and handler
 
-### Application.UnitTest
+**Application.UnitTest**
 
-This is the Application unit tests project.
+- This is the Application unit tests project.
 
-It is a xUnit project.
+- It is a xUnit project.
 
-Contains all the unit tests for the application project.
+- Contains all the unit tests for the application project.
 
-Uses xUnit and FluentAssertions NuGet packages.
+- Uses xUnit and FluentAssertions NuGet packages.
 
-### WebApi
+**WebApi**
 
-This is the web API project.
+- This is the web API project.
 
-It is an API project.
+- It is an API project.
 
-Contains all the controllers and a simple HTML page in wwwroot/index.html to test the functionality.
+- Contains all the controllers and a simple HTML page in wwwroot/index.html to test the functionality.
 
-Uses MediatR.Extensions.Microsoft.DependencyInjection, FluentValidation.AspNetCore, Swashbuckle.AspNetCore and Microsoft.AspNetCore.Mvc.NewtonsoftJson NuGet packages.
+- Uses MediatR.Extensions.Microsoft.DependencyInjection, FluentValidation.AspNetCore, Swashbuckle.AspNetCore and Microsoft.AspNetCore.Mvc.NewtonsoftJson NuGet packages.
 
 
 ------------- TODO: Explain the MediatR, CQRS and FluentValidation patterns
 
 
-## Assumptions
+### Assumptions
 
-### Rover out of bounds
+**Rover out of bounds**
 
-The author assumes that the Mars Rover can not go beyond the bounds of the grid.
+- The author assumes that the Mars Rover can not go beyond the bounds of the grid.
 
-If this happens with any Mars Rover at any time, the application will return an error message.
+- If this happens with any Mars Rover at any time, the application will return an error message.
 
-## Initial list of rover instructions
+**Initial list of rover instructions**
 
-The author decided to start the UI in index.html with a list of two rover instructions preset to make it easy the testing process.
+- The author decided to start the UI in index.html with a list of two rover instructions preset to make it easy the testing process.
 
-Anyway, the user can add new Rover instructions to the list or remove the existing ones
+- Anyway, the user can add new Rover instructions to the list or remove the existing ones
 
 
 
