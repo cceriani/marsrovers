@@ -10,6 +10,6 @@ namespace Domain.Models
 
         public HeadingEnum heading { get; set; }
 
-        public string positionAndHeading => $"{x}{y}{heading}";
+        public string positionAndHeading => $"{x}{y} {heading}";
     }
 }

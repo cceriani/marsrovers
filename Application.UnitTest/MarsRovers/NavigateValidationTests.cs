@@ -46,11 +46,13 @@ namespace Application.UnitTest.MarsRovers
             result.IsValid.Should().BeTrue();
         }
 
-        [Fact]
-        public void NavigateRequestValidator_ShouldFail_WhenEastBoundIsNegative()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void NavigateRequestValidator_ShouldFail_WhenEastBoundIsNotPositive(int bound)
         {
             //Arrange
-            model.eastBound = -1;
+            model.eastBound = bound;
             var _sut = new NavigateRequestValidator();
 
             //Act
@@ -62,11 +64,13 @@ namespace Application.UnitTest.MarsRovers
             errors.Should().Contain("East bound must be greater than 0");
         }
 
-        [Fact]
-        public void NavigateRequestValidator_ShouldFail_WhenNorthBoundIsNegative()
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void NavigateRequestValidator_ShouldFail_WhenNorthBoundIsNotPositive(int bound)
         {
             //Arrange
-            model.northBound = -1;
+            model.northBound = bound;
             var _sut = new NavigateRequestValidator();
 
             //Act

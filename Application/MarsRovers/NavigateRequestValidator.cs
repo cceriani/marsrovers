@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
+using Application.Interfaces;
 using Application.ModelValidation;
 using FluentValidation;
 
 namespace Application.MarsRovers
 {
-    public class NavigateRequestValidator : AbstractValidator<NavigateRequest>
+    public class NavigateRequestValidator : AbstractValidator<NavigateRequest>, IRequestValidator
     {
         public NavigateRequestValidator()
         {

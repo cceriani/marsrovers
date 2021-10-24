@@ -60,10 +60,10 @@ namespace Application.UnitTest.MarsRovers
 
         #region Navigate handler tests
         [Theory]
-        [InlineData(1, 2, HeadingEnum.N, "LMLMLMLMM", "13N")]
-        [InlineData(1, 2, HeadingEnum.N, "MMRMRMLLMMRMRM", "34S")]
-        [InlineData(1, 2, HeadingEnum.N, "LMRMMMRMMMMMRMMMMMRMMMMMRMMRML", "12N")]
-        [InlineData(3, 3, HeadingEnum.E, "MMRMMRMRRM", "51E")]
+        [InlineData(1, 2, HeadingEnum.N, "LMLMLMLMM", "13 N")]
+        [InlineData(1, 2, HeadingEnum.N, "MMRMRMLLMMRMRM", "34 S")]
+        [InlineData(1, 2, HeadingEnum.N, "LMRMMMRMMMMMRMMMMMRMMMMMRMMRML", "12 N")]
+        [InlineData(3, 3, HeadingEnum.E, "MMRMMRMRRM", "51 E")]
         public async Task NavigateHandler_ShouldReturnCorrectResponse_WhenRequestIsOk(int x, int y,
             HeadingEnum heading, string instructions, string expectedResult)
         {
@@ -83,7 +83,7 @@ namespace Application.UnitTest.MarsRovers
             result.Rovers.Should().NotBeNull();
             result.Rovers.Count.Should().Be(2);
             result.Rovers[0].positionAndHeading.Should().Be(expectedResult);
-            result.Rovers[1].positionAndHeading.Should().Be("51E");
+            result.Rovers[1].positionAndHeading.Should().Be("51 E");
         }
 
         [Fact]
@@ -227,10 +227,10 @@ namespace Application.UnitTest.MarsRovers
         }
 
         [Theory]
-        [InlineData(1, 2, HeadingEnum.N, "LMLMLMLMM", "13N")]
-        [InlineData(1, 2, HeadingEnum.N, "MMRMRMLLMMRMRM", "34S")]
-        [InlineData(1, 2, HeadingEnum.N, "LMRMMMRMMMMMRMMMMMRMMMMMRMMRML", "12N")]
-        [InlineData(3, 3, HeadingEnum.E, "MMRMMRMRRM", "51E")]
+        [InlineData(1, 2, HeadingEnum.N, "LMLMLMLMM", "13 N")]
+        [InlineData(1, 2, HeadingEnum.N, "MMRMRMLLMMRMRM", "34 S")]
+        [InlineData(1, 2, HeadingEnum.N, "LMRMMMRMMMMMRMMMMMRMMMMMRMMRML", "12 N")]
+        [InlineData(3, 3, HeadingEnum.E, "MMRMMRMRRM", "51 E")]
         public void Navigate_ShouldReturnRover_WhenEverythingIsOk(int x, int y, HeadingEnum heading, string instructions, string expectedResult)
         {
             //Arrange

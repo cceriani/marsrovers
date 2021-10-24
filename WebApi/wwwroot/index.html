@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Mars Rovers problem</title>
+    <script>
+        //submits form to API
+        function submitData() {
+            const data = getData();
+
+            if (!validateData(data)) {
+                return;
+            }
+
+            const fetchData = {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8"
+                }
+            }
+
+            fetch('https://localhost:10048/api/marsrovers', fetchData)
+                .then(response => response.json())
+                .then(response => {
+                    if (!response) {
+                        displayApiError("No response from API");
+                        return;
+                    }
+                    if (response.errors) {
+                        displayApiError(response.errors);
+                        return;
+                    }
+                    displayApiResponse(response.rovers);
+                })
+                .catch(error => {
+                    displayApiError(error);
+                });
+        }
+
+        //validates data to be sent to the Web API
+        function validateData(data) {
+            if (isNaN(data.eastBound)) {
+                alert("East bound is incorrect");
+                return false;
+            }
+            if (data.eastBound <= 0) {
+                alert("East bound can not be less or equal than 0");
+                return false;
+            }
+            if (isNaN(data.northBound)) {
+                alert("North bound is incorrect");
+                return false;
+            }
+            if (data.northBound <= 0) {
+                alert("North bound can not be less or equal than 0");
+                return false;
+            }
+            if (data.roverInstructions.length == 0) {
+                alert("You must add at least one rover instructions element");
+                return false;
+            }
+            return true;
+        }
+
+        //gets dta to be sent to API
+        function getData() {
+            const form = document.forms[0];
+            return {
+                "eastBound": parseInt(form["eastBound"].value),
+                "northBound": parseInt(form["northBound"].value),
+                "roverInstructions": roverInstructionList
+            };
+        }
+
+        //display the Web API response inside a div
+        function displayApiResponse(rovers) {
+            const list = rovers.map((item, index) => {
+                return `Rover #${index}: ${item.positionAndHeading}`;
+            });
+            document.getElementById("divResponse").innerHTML = list.join("<br />");
+        }
+
+        //display the Web API response inside a div
+        function displayApiError(error) {
+            let message = "";
+            if (typeof (error) == "object") {
+                let errors;
+                for (const key in error) {
+                    errors = (typeof (error[key]) == "array") ? error[key].join(";") : error[key];
+                    message += `${key}: ${errors}<br />`;
+                }
+            }
+            else {
+                message = error;
+            }
+            document.getElementById("divResponse").innerHTML = `<span style="color: red">${message}</span>`;
+        }
+
+        //rover instructions list
+        var roverInstructionList = [
+            {
+                "rover": {
+                    "x": 1,
+                    "y": 2,
+                    "heading": "N"
+                },
+                "instructions": "LMLMLMLMM"
+            },
+            {
+                "rover": {
+                    "x": 3,
+                    "y": 3,
+                    "heading": "E"
+                },
+                "instructions": "MMRMMRMRRM"
+            }
+        ];
+
+        //adds rover instructions to the list
+        function addRoverInstructions() {
+            const form = document.forms[0];
+            const roverInstructions = {
+                "rover": {
+                    "x": parseInt(form["roverX"].value),
+                    "y": parseInt(form["roverY"].value),
+                    "heading": form["heading"].value
+                },
+                "instructions": form["instructions"].value
+            };
+
+            if (!validateRoverInstructions(roverInstructions)) {
+                return;
+            }
+
+            roverInstructionList.push(roverInstructions);
+
+            cleanRoverInstructionsForm();
+
+            displayRoverInstructionList();
+        }
+
+        //validates rover instructions
+        function validateRoverInstructions(roverInstructions) {
+            
+            const form = document.forms[0];
+            const eastBound = parseInt(form["eastBound"].value) || 0;
+            const northBound = parseInt(form["northBound"].value) || 0;
+
+            if (isNaN(roverInstructions.rover.x)) {
+                alert("x is incorrect");
+                return false;
+            }
+            if (roverInstructions.rover.x < 0) {
+                alert("x can not be less than 0");
+                return false;
+            }
+            if (roverInstructions.rover.x > eastBound) {
+                alert(`x can not be greater than ${eastBound}`);
+                return false;
+            }
+            if (isNaN(roverInstructions.rover.y)) {
+                alert("y is incorrect");
+                return false;
+            }
+            if (roverInstructions.rover.y < 0) {
+                alert("y can not be less than 0");
+                return false;
+            }
+            if (roverInstructions.rover.y > northBound) {
+                alert(`y can not be greater than ${northBound}`);
+                return false;
+            }
+            if (!/^([LRM])*$/.test(roverInstructions.instructions)) {
+                alert("Invalid instructions found");
+                return false;
+            }
+
+            return true;
+        }
+
+        //cleans rover instructions form
+        function cleanRoverInstructionsForm() {
+            const form = document.forms[0];
+            form["roverX"].value = 0;
+            form["roverY"].value = 0;
+            form["heading"].value = "N";
+            form["instructions"].value = "";
+        }
+
+        //displays rover instructions list
+        function displayRoverInstructionList() {
+            const table = roverInstructionList.map((item, index) => {
+                return `<tr><td>${index}</td><td>${item.rover.x}</td><td>${item.rover.y}</td><td>${item.rover.heading}</td><td>${item.instructions}</td><td><a href="javascript:deleteRoverInstructions(${index})">Delete</a></td></tr>`;
+            });
+
+            document.getElementById("divRoverList").innerHTML = `<table width="100%" style="text-align: center"><tr><th>Rover #</th><th>X</th><th>Y</th><th>Heading</th><th>Instructions</th><th></th></tr>${table.join('')}</table>`;
+        }
+
+        //deletes rover instructions from list
+        function deleteRoverInstructions(index) {
+            if ((index < 0) || (index >= roverInstructionList.length)) {
+                return;
+            }
+
+            roverInstructionList.splice(index, 1);
+
+            displayRoverInstructionList();
+        }
+
+        //Used when changed east and north bounds to set max rover X and Y allowed values 
+        function bound_Change(obj, roverDimensionId) {
+            document.getElementById(roverDimensionId).max = parseInt(obj.value) || 1000;
+        }
+    </script>
+</head>
+<body onload="displayRoverInstructionList()">
+    <h1>Mars Rovers problem</h1>
+
+    <form name="form1" onsubmit="return false">
+        <h3>Grid</h3>
+        East bound:
+        <input type="number" name="eastBound" value="5" min="1" max="1000" onchange="bound_Change(this, 'roverX')" style="width: 50px;" />
+        <br /><br />
+        North bound:
+        <input type="number" name="northBound" value="5" min="1" max="1000" onchange="bound_Change(this, 'roverY')" style="width: 50px;" />
+        <br /><br />
+        <h3>Rover Instructions</h3>
+
+        Rover X:
+        <input type="number" name="roverX" id="roverX" value="0" max="5" min="0" style="width: 50px;" />
+        &nbsp;&nbsp;
+        Rover Y:
+        <input type="number" name="roverY" id="roverY" value="0" max="5" min="0" style="width: 50px;" />
+        &nbsp;&nbsp;
+        Rover Heading:
+        <select name="heading">
+            <option value="N">North</option>
+            <option value="E">East</option>
+            <option value="S">South</option>
+            <option value="W">West</option>
+        </select>
+        &nbsp;&nbsp;
+        Instructions:
+        <input type="text" maxlength="100" width="150" name="instructions" placeholder="Use L,R and M only" />
+        &nbsp;&nbsp;
+        <button onclick="addRoverInstructions()"> + </button>
+
+        <br />
+        <div id="divRoverList"></div>
+
+        <br /><br />
+        <button onclick="submitData()"> Submit </button>
+
+        <br /><br />
+        <div id="divResponse"></div>
+    </form>
+</body>
+</html>
