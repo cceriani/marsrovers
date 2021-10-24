@@ -21,7 +21,7 @@
             }
 
             displayMessage("With a moment please...");
-            fetch('https://localhost:10048/api/marsrovers', fetchData)
+            fetch('api/marsrovers', fetchData)
                 .then(response => response.json())
                 .then(response => {
                     if (!response) {
