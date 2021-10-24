@@ -20,6 +20,7 @@
                 }
             }
 
+            displayMessage("With a moment please...");
             fetch('https://localhost:10048/api/marsrovers', fetchData)
                 .then(response => response.json())
                 .then(response => {
@@ -194,7 +195,15 @@
                 return `<tr><td>${index}</td><td>${item.rover.x}</td><td>${item.rover.y}</td><td>${item.rover.heading}</td><td>${item.instructions}</td><td><a href="javascript:deleteRoverInstructions(${index})">Delete</a></td></tr>`;
             });
 
-            document.getElementById("divRoverList").innerHTML = `<table width="100%" style="text-align: center"><tr><th>Rover #</th><th>X</th><th>Y</th><th>Heading</th><th>Instructions</th><th></th></tr>${table.join('')}</table>`;
+            document.getElementById("divRoverList").innerHTML =
+                `<table width="100%" cellspacing="0" cellpadding="0" border="1" style="text-align: center; border: solid 1px #CDCDCD"><tr>\
+                    <th>Rover #</th>\
+                    <th>X</th>\
+                    <th>Y</th>\
+                    <th>Heading</th>\
+                    <th>Instructions</th>\
+                    <th></th>\
+                </tr>${table.join('')}</table>`;
         }
 
         //deletes rover instructions from list
@@ -211,6 +220,11 @@
         //Used when changed east and north bounds to set max rover X and Y allowed values 
         function bound_Change(obj, roverDimensionId) {
             document.getElementById(roverDimensionId).max = parseInt(obj.value) || 1000;
+        }
+
+        //displays a message in the screen
+        function displayMessage(message) {
+            document.getElementById("divResponse").innerHTML = message;
         }
     </script>
 </head>
@@ -246,7 +260,7 @@
         &nbsp;&nbsp;
         <button onclick="addRoverInstructions()"> + </button>
 
-        <br />
+        <br /><br />
         <div id="divRoverList"></div>
 
         <br /><br />
