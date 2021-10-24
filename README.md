@@ -37,11 +37,9 @@ Once each rover has received and completely executed its given instructions, it 
 
 ### DESIGN
 
-The solution is formed by 4 projects
+The solution is formed by 4 projects and uses Mediator pattern and Fluent validations to reduce complexity
 
-**Domain**
-
-- This is the Domain project.
+**Domain project**
 
 - It is a class library project.
 
@@ -49,11 +47,11 @@ The solution is formed by 4 projects
 
 - Referenced by the Application project.
 
-- Does not use any NuGet package.
+- Doesn't use any NuGet package.
 
-**Application**
+- There are only two models in this project. The model RoverInstruction that contains a Rover instance and a string with the navigation instructions, and the model Rover that contains the position and heading of a specific Mars Rover. Each model has its own Validators in the ModelNavigation folder of the Application project.
 
-- This is the Application project.
+**Application project**
 
 - It is a class library project.
 
@@ -63,11 +61,15 @@ The solution is formed by 4 projects
 
 - Uses MediatR and FluentValidation NuGet packages.
 
-------------- TODO: Explain about request, response, validator (with child) and handler
+- This project has a MarsRovers folder that contains the request, response, validator and handler of the Navigate Rover command. When the MarsRovers controller from the WebApi sends a Mediator message with a NavigateRequest, the handler is called to execute all the logic involved in the operation and returns the NavigateResponse.
 
-**Application.UnitTest**
+- The NavigateRequest contains the East and North bounds of the navigation grid, along with a list of Rover instructions.
 
-- This is the Application unit tests project.
+- The NavigateResponse contains a list of Rovers that represents the new position and heading of each Rover after the Navigation, and an error string. When all the navigation instructions are executed successfully, error is null. Otherwise, error will contain the error message/s.
+
+- The NavigateRequestValidator uses FluentValidation combined with their child validators from ModelValidation folder. Those are the RoverInstructionValidator and the RoverValidator.
+
+**Application.UnitTest project**
 
 - It is a xUnit project.
 
@@ -75,9 +77,7 @@ The solution is formed by 4 projects
 
 - Uses xUnit and FluentAssertions NuGet packages.
 
-**WebApi**
-
-- This is the web API project.
+**WebApi project**
 
 - It is an API project.
 
@@ -85,8 +85,17 @@ The solution is formed by 4 projects
 
 - Uses MediatR.Extensions.Microsoft.DependencyInjection, FluentValidation.AspNetCore, Swashbuckle.AspNetCore and Microsoft.AspNetCore.Mvc.NewtonsoftJson NuGet packages.
 
+- There is only one controller in this project, the MarsRoversController, with only one endpoint. It is a POST method that receives a NavigateRequest, validates it through FluentValidation and sends a Mediator message to reach the NavigateHandler. Then this method returns the NavigateResponse to the caller.
 
-------------- TODO: Explain the MediatR, CQRS and FluentValidation patterns
+- The Startup of this project configures the following things:
+  - A CORS policy to allow any origin, any method and anyheader.
+  - NewtonSoftJson to allow enum values as strings
+  - Fluent validation to be executed when a request is received in the controller
+  - Swagger
+  - MediatR to configure the NavigateHandler
+  - A Transient DI of IValidator<NavigateRequest> with NavigateRequestValidator so that FluentValidator knows that an instance of NavigateRequest must be validated with an instance of NavigateRequestValidator.
+
+- Inside the folder wwwroot there is an index.html file, set as the default launch url in launchSettings.json. This is the only page in the project and contains all the code needed to make manual testing to this application. It contains a form with some inputs to define the grid east and north bounds, and a section to create a list of rover instructions. In this section you can add as many rover instructions as you wish. When you finish with the grid and rover list defined, you can press the Submit button to call the API. All the client logic is written in pure javascript in the header of this file.
 
 
 ### Assumptions
@@ -97,11 +106,13 @@ The solution is formed by 4 projects
 
 - If this happens with any Mars Rover at any time, the application will return an error message.
 
-**Initial list of rover instructions**
+**Initial rover instructions**
 
 - The author decided to start the UI in index.html with a list of two rover instructions preset to make it easy the testing process.
 
-- Anyway, the user can add new Rover instructions to the list or remove the existing ones
+- Anyway, the user can add new Rover instructions to the list or remove the existing ones.
+
+Author: Carlos Ceriani
 
 
 
